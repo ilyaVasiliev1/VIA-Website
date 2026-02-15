@@ -211,8 +211,9 @@ body {
 @media (max-width: 560px) {
   .page {
     width: 100%;
-    min-height: auto;
-    justify-content: flex-start;
+    min-height: 100svh;
+    min-height: 100dvh;
+    justify-content: center;
     padding-top: max(18px, env(safe-area-inset-top));
     padding-bottom: max(18px, env(safe-area-inset-bottom));
     padding-left: max(12px, env(safe-area-inset-left));
