@@ -31,8 +31,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   gap: clamp(18px, 3vw, 28px);
-  position: relative;
-  z-index: 1;
 }
 
 .hero {
@@ -190,7 +188,6 @@ body {
 
 @media (min-width: 1024px) {
   .page {
-    width: 560px;
     padding-top: 38px;
     padding-bottom: 38px;
     padding-left: 20px;
@@ -210,9 +207,6 @@ body {
 
 @media (max-width: 560px) {
   .page {
-    width: 100%;
-    min-height: 100svh;
-    min-height: 100dvh;
     justify-content: center;
     padding-top: max(18px, env(safe-area-inset-top));
     padding-bottom: max(18px, env(safe-area-inset-bottom));

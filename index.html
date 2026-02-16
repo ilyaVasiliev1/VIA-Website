@@ -46,11 +46,11 @@
           <span class="arrow" aria-hidden="true">›</span>
         </a>
 
-        <a class="link reveal reveal-4" href="https://weixin.qq.com/" target="_blank" rel="noopener noreferrer">
+        <a class="link reveal reveal-4 wechat-link" href="weixin://dl/chat?Vasilev_Ilia" data-wechat-id="Vasilev_Ilia">
           <span class="icon" aria-hidden="true">
             <i class="bi bi-wechat"></i>
           </span>
-          <span class="link-text">WeChat</span>
+          <span class="link-text">WeChat: Vasilev_Ilia</span>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
 
@@ -71,5 +71,42 @@
         </a>
       </nav>
     </main>
+
+    <script>
+      (() => {
+        const wechatLink = document.querySelector(".wechat-link");
+        if (!wechatLink) return;
+
+        wechatLink.addEventListener("click", async (event) => {
+          event.preventDefault();
+
+          const wechatId = wechatLink.getAttribute("data-wechat-id") || "Vasilev_Ilia";
+          const deepLink = `weixin://dl/chat?${encodeURIComponent(wechatId)}`;
+          let appOpened = false;
+
+          const onVisibilityChange = () => {
+            if (document.hidden) appOpened = true;
+          };
+
+          document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
+
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(wechatId);
+            }
+          } catch (_error) {
+            // Ignore clipboard errors silently.
+          }
+
+          window.location.href = deepLink;
+
+          setTimeout(() => {
+            if (!appOpened) {
+              alert(`Open WeChat and search this ID: ${wechatId}`);
+            }
+          }, 1200);
+        });
+      })();
+    </script>
   </body>
 </html>
