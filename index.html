@@ -46,11 +46,17 @@
           <span class="arrow" aria-hidden="true">›</span>
         </a>
 
-        <a class="link reveal reveal-4 wechat-link" href="weixin://dl/chat?Vasilev_Ilia" data-wechat-id="Vasilev_Ilia">
+        <a
+          class="link reveal reveal-4 wechat-link"
+          href="#"
+          data-wechat-id="Vasilev_Ilia"
+          aria-haspopup="dialog"
+          aria-controls="wechatModal"
+        >
           <span class="icon" aria-hidden="true">
             <i class="bi bi-wechat"></i>
           </span>
-          <span class="link-text">WeChat: Vasilev_Ilia</span>
+          <span class="link-text">WeChat</span>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
 
@@ -72,38 +78,82 @@
       </nav>
     </main>
 
+    <div class="wechat-modal" id="wechatModal" role="dialog" aria-modal="true" aria-labelledby="wechatModalTitle" hidden>
+      <button class="wechat-modal__backdrop" type="button" aria-label="Close dialog" data-close-modal></button>
+      <div class="wechat-modal__card" role="document">
+        <button class="wechat-modal__close" type="button" aria-label="Close dialog" data-close-modal></button>
+        <p class="wechat-modal__label">Scan to add on WeChat</p>
+        <h2 class="wechat-modal__title" id="wechatModalTitle">ID: Vasilev_Ilia</h2>
+
+        <div class="wechat-modal__qr-wrap">
+          <img src="assets/wechat-qr.jpg" alt="WeChat QR code for Vasilev_Ilia" loading="lazy" />
+        </div>
+
+        <div class="wechat-modal__actions">
+          <button class="wechat-btn" id="copyWechatId" type="button">Copy ID</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       (() => {
         const wechatLink = document.querySelector(".wechat-link");
-        if (!wechatLink) return;
+        const modal = document.getElementById("wechatModal");
+        const modalTitle = document.getElementById("wechatModalTitle");
+        const closeModalNodes = modal?.querySelectorAll("[data-close-modal]");
+        const copyIdButton = document.getElementById("copyWechatId");
+        if (!wechatLink || !modal) return;
 
-        wechatLink.addEventListener("click", async (event) => {
-          event.preventDefault();
+        const wechatId = wechatLink.getAttribute("data-wechat-id") || "Vasilev_Ilia";
+        if (modalTitle) {
+          modalTitle.textContent = `ID: ${wechatId}`;
+        }
 
-          const wechatId = wechatLink.getAttribute("data-wechat-id") || "Vasilev_Ilia";
-          const deepLink = `weixin://dl/chat?${encodeURIComponent(wechatId)}`;
-          let appOpened = false;
+        const MODAL_TRANSITION_MS = 260;
 
-          const onVisibilityChange = () => {
-            if (document.hidden) appOpened = true;
-          };
+        const openModal = () => {
+          modal.hidden = false;
+          document.body.classList.add("modal-open");
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              modal.classList.add("is-visible");
+            });
+          });
+        };
 
-          document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
-
-          try {
-            if (navigator.clipboard?.writeText) {
-              await navigator.clipboard.writeText(wechatId);
-            }
-          } catch (_error) {
-            // Ignore clipboard errors silently.
-          }
-
-          window.location.href = deepLink;
-
+        const closeModal = () => {
+          modal.classList.remove("is-visible");
           setTimeout(() => {
-            if (!appOpened) {
-              alert(`Open WeChat and search this ID: ${wechatId}`);
-            }
+            modal.hidden = true;
+            document.body.classList.remove("modal-open");
+          }, MODAL_TRANSITION_MS);
+        };
+
+        wechatLink.addEventListener("click", (event) => {
+          event.preventDefault();
+          openModal();
+        });
+
+        closeModalNodes?.forEach((node) => {
+          node.addEventListener("click", closeModal);
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        });
+
+        copyIdButton?.addEventListener("click", async () => {
+          const defaultText = "Copy ID";
+          try {
+            await navigator.clipboard.writeText(wechatId);
+            copyIdButton.textContent = "Copied";
+          } catch (_error) {
+            copyIdButton.textContent = "Copy failed";
+          }
+          setTimeout(() => {
+            copyIdButton.textContent = defaultText;
           }, 1200);
         });
       })();
